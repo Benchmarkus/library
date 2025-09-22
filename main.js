@@ -133,14 +133,12 @@ form.addEventListener("submit", (e)=>{
     const inputAuthor = document.querySelector("#author");
     const inputPages = document.querySelector("#pages");
     const inputIsRead = document.querySelector("input[name='read']:checked");
-    console.log(inputAuthor.value);
-    console.log(inputPages.value);
-    console.log(inputTitle.value);
-    console.log(inputIsRead.value);
 
     addBookToLibrary(inputTitle.value, inputAuthor.value, inputPages.value, inputIsRead.value);
 
     drawLibrary();
+
+    form.reset();
 
     dialog.close();
 });
