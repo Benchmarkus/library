@@ -1,3 +1,15 @@
+// buttons
+const addButton = document.querySelector(".insert-a-book");
+const cancelButton = document.querySelector(".cancel-button");
+const confirmButton = document.querySelector(".confirm-button");
+
+// other elements
+const dialog = document.querySelector(".insert-dialog");
+const form = document.querySelector("#form");
+const container = document.querySelector(".container");
+const tableHeader = document.querySelector(".header");
+
+// array that stores books
 const myLibrary = [];
 
 function Book(title, author, pages, isRead) {
@@ -12,14 +24,27 @@ function addBookToLibrary(title, author, pages, isRead) {
     let newBook = new Book(title, author, pages, isRead)
 
     myLibrary.push(newBook);
+    console.table(myLibrary);
+}
+
+function deleteBook(id) {
+    for (const [i, book] of myLibrary.entries()) {
+        if (book.id == id) {
+            myLibrary.splice(i, 1);
+        }
+    }
+    console.table(myLibrary);
 }
 
 function drawLibrary() {
     // clear table (div container)
     container.replaceChildren();
 
+    // insert header back in
+    container.appendChild(tableHeader);
+
     for (let book of myLibrary) {
-        // div class=row
+        // div class=row will hold the children
         const newRow = document.createElement("div");
         newRow.setAttribute("class", "row");
 
@@ -41,15 +66,26 @@ function drawLibrary() {
         
         // newChangeRead button
         const newChangeRead = document.createElement("button");
+        newChangeRead.setAttribute("class", "read-toggle-button");
         newChangeRead.setAttribute("type", "button");
         newChangeRead.setAttribute("id", book.id);
         newChangeRead.textContent = "Change Read";
+        newChangeRead.addEventListener("click", (e) => {
+            toggleReadStatus(e.target.id);
+            drawLibrary();
+        })
         
-        // newChangeRead button
+        // newDeletebutton
         const newDeleteButton = document.createElement("button");
+        newDeleteButton.setAttribute("class", "delete-button");
         newDeleteButton.setAttribute("type", "button");
         newDeleteButton.setAttribute("id", book.id);
         newDeleteButton.textContent = "Delete";
+        newDeleteButton.addEventListener("click", (e) => {
+            // button's id is the same as the book's
+            deleteBook(e.target.id);
+            drawLibrary();
+        })
 
         // append <p>s and <button>s to row <div>
         newRow.appendChild(newTitle);
@@ -61,19 +97,23 @@ function drawLibrary() {
 
         // append div row to div class="container"
         container.appendChild(newRow);
-
     }
 }
 
-// buttons
-const addButton = document.querySelector(".insert-a-book");
-const cancelButton = document.querySelector(".cancel-button");
-const confirmButton = document.querySelector(".confirm-button");
+function toggleReadStatus(id) {
+    for (const [i, book] of myLibrary.entries()) {
+        if (id == book.id) {
+            if (book.isRead === "Yes") {
+                book.isRead = "No"
+            } else {
+                book.isRead = "Yes"
+            }
+        }
+    }
+    drawLibrary();
+    console.table(myLibrary);
+}
 
-// other elements
-const dialog = document.querySelector(".insert-dialog");
-const form = document.querySelector("#form");
-const container = document.querySelector(".container");
 
 // Add a Book button
 addButton.addEventListener("click", () => {
@@ -103,6 +143,5 @@ form.addEventListener("submit", (e)=>{
     drawLibrary();
 
     dialog.close();
-
-
 });
+
